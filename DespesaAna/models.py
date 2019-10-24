@@ -2,6 +2,7 @@ from django.db import models
 
 class Despesa(models.Model):
     data_criacao = models.DateField('Data de Criação')
+    tipo_despesa = models.CharField('Tipo de Despesa',)
     RE = 'Remedio'
     RO = 'Roupas'
     ALI = 'Alimentação'
@@ -16,8 +17,8 @@ class Despesa(models.Model):
         (TRANS, 'Transporte'),
         (OUT, 'Outros')
     ]
-    tipo_despesa = models.CharField('Tipo de Despesa', max_length=20, choices=TIPO_CHOICES_DESPESA, default=ALI)
-    descricao = models.CharField('Descrição', max_length=300)
+    tipo_despesa = models.CharField('Tipo de Despesa', max_length=20, choices=TIPO_CHOICES_DESPESA)
+    descricao = models.TextField('Descrição')
     DI = 'Dinheiro'
     CC = 'Cartão de Crédito'
     CD = 'Cartão de Débito'
@@ -32,18 +33,17 @@ class Despesa(models.Model):
     ]
     forma_pagamento = models.CharField('Forma de Pagamento', max_length=20, choices=TIPO_CHOICES_PAGAMENTO, default=DI)
     vencimento = models.DateField('Vencimento')
-    quitado = models.BooleanField('Quitado')
+    quitado = models.BooleanField()
+
+    def __str__(self):
+        return "%s %s %s"%(
+            self.descricao,
+            self.data_criacao.strftime("%d/%M/%Y"),
+            self.tipo_despesa
+        )
 
     class Meta:
         verbose_name_plural = 'Despesas'
         verbose_name = 'Despesa'
 
-def __str__(self):
-    return '{} {} - {}'.format(
-            self.data.strftime('%d/%m/%Y'),
-            self.hora.strftime('%H:%M'),
-            self.data_criacao
-        )
-
-def __str__(self):
-    return self.data_criacao
+ordering = ('vencimento','forma_pagamento')
